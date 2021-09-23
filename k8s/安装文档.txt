@@ -1,0 +1,48 @@
+1.配置kubernetes源
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[Kubernetes]
+baseurl=http://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+gpgkey=http://mirrors.aliyun.com/kubernetes/yum/doc/yum-key.gpg
+        http://mirrors.aliyun.com/kubernetes/yum/doc/rpm-package-key.gpg
+EOF
+
+2.安装 etcd  kubenetes 以下操作会自动安装docker，如果已经安装docker，会报错，卸载重装即可
+
+3.安装kubernetes
+yum install -y etcd kubernetes
+
+4.修改docker和k8s配置文件
+vim /etc/sysconfig/docker
+OPTIONS='--selinux-enabled=false --insecure-registry gcr.io'
+
+vim /etc/kubernetes/apiserver
+KUBE_ADMISSION_CONTROL="--admission_control=NamespaceLifecycle,NamespaceExists,
+ LimitRanger,SecurityContextDeny,ResourceQuota"
+ 
+ 5.按顺序启动
+systemctl start etcd
+systemctl start docker
+systemctl start kube-apiserver
+systemctl start kube-controller-manager
+systemctl start kube-scheduler
+systemctl start kubelet
+systemctl start kube-proxy
+
+6.设置开机自启
+systemctl enable etcd
+systemctl enable docker
+systemctl enable kube-apiserver
+systemctl enable kube-controller-manager
+systemctl enable kube-scheduler
+systemctl enable kubelet
+systemctl enable kube-proxy
+
+7.验证
+ps -ef | grep kube
+
+kubectl version
+
+etcdctl cluster-health
