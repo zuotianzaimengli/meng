@@ -12,7 +12,7 @@ import java.util.Set;
 public class Demo2 {
 
     public static void main(String[] args) {
-        function("abc").forEach(System.out::println);
+        function2("abcaaa").forEach(System.out::println);
     }
 
     private static List<String> function(String str){
@@ -42,6 +42,13 @@ public class Demo2 {
         }
     }
 
+
+    private static List<String> function2(String string){
+        List<String> list = new ArrayList<>();
+        function2(string.toCharArray(),0,list);
+        return list;
+    }
+
     /**
      * 字符串全排列，不重复
      * 深度优先遍历
@@ -61,7 +68,7 @@ public class Demo2 {
                 char ch = arr[index];
                 arr[index] = arr[i];
                 arr[i] = ch;
-                function(arr, index + 1, res);
+                function2(arr, index + 1, res);
                 arr[i] = arr[index];
                 arr[index] = ch;
             }
